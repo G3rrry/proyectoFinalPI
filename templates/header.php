@@ -27,47 +27,42 @@
 <body>
 
     <!-- Barra de Navegación -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="index.php?page=catalogo">
                 <i class="bi bi-shop"></i> E-Shop Pro
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
             
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link <?php echo ($pagina == 'catalogo') ? 'active' : ''; ?>" href="index.php?page=catalogo">Catálogo</a>
+                        <a class="nav-link" href="index.php?page=catalogo">Catálogo</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link <?php echo ($pagina == 'contacto') ? 'active' : ''; ?>" href="index.php?page=contacto">Contacto</a>
-                    </li>
-                </ul>
+                    </ul>
                 
-                <!-- Menú de Usuario -->
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-person-circle"></i> Cuenta
+                            <i class="bi bi-person-circle"></i> 
+                            <?php 
+                            // Mostrar nombre si está logueado, si no "Cuenta"
+                            echo isset($_SESSION['nombre_usuario']) ? htmlspecialchars($_SESSION['nombre_usuario']) : 'Cuenta'; 
+                            ?>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="index.php?page=login">Iniciar Sesión</a></li>
-                            <li><a class="dropdown-item" href="index.php?page=registro">Registrarse</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="index.php?page=perfil">Mi Perfil</a></li>
-                            <li><a class="dropdown-item" href="index.php?page=historial">Historial de Compras</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-danger" href="index.php?page=admin">Panel Admin</a></li>
+                            <?php if (isset($_SESSION['id_usuario'])): ?>
+                                <li><a class="dropdown-item" href="index.php?page=perfil">Mi Perfil</a></li>
+                                <li><a class="dropdown-item" href="index.php?page=historial">Historial</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="index.php?page=logout">Cerrar Sesión</a></li>
+                            <?php else: ?>
+                                <li><a class="dropdown-item" href="index.php?page=login">Iniciar Sesión</a></li>
+                                <li><a class="dropdown-item" href="index.php?page=registro">Registrarse</a></li>
+                            <?php endif; ?>
                         </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link <?php echo ($pagina == 'carrito') ? 'active' : ''; ?>" href="index.php?page=carrito">
-                            <i class="bi bi-cart4"></i> <span class="badge bg-danger rounded-pill">0</span>
-                        </a>
-                    </li>
-                </ul>
+                    
+                    </ul>
             </div>
         </div>
     </nav>

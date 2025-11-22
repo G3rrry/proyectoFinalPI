@@ -1,12 +1,47 @@
+<?php
+$error = "";
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    // Buscar usuario por email
+    $stmt = $conn->prepare("SELECT id_usuario, nombre_usuario, contrasena FROM `Usuarios` WHERE correo_electronico = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $resultado = $stmt->get_result();
+
+    if ($user = $resultado->fetch_assoc()) {
+        // Verificar contraseña hasheada
+        if (password_verify($password, $user['contrasena'])) {
+            // ¡LOGIN CORRECTO! Guardamos datos en sesión
+            $_SESSION['id_usuario'] = $user['id_usuario'];
+            $_SESSION['nombre_usuario'] = $user['nombre_usuario'];
+            
+            // Redirigir al catálogo o perfil
+            echo "<script>window.location='index.php?page=catalogo';</script>";
+            exit;
+        } else {
+            $error = "Contraseña incorrecta.";
+        }
+    } else {
+        $error = "No existe una cuenta con ese correo.";
+    }
+}
+?>
+
 <div class="row justify-content-center">
     <div class="col-md-5">
         <div class="card shadow">
             <div class="card-header bg-primary text-white">Iniciar Sesión</div>
             <div class="card-body">
-                <form action="#" method="POST">
+                <?php if($error): ?>
+                    <div class="alert alert-danger py-2"><?php echo $error; ?></div>
+                <?php endif; ?>
+
+                <form action="" method="POST">
                     <div class="mb-3">
                         <label class="form-label">Correo Electrónico</label>
-                        <input type="email" name="email" class="form-control" placeholder="nombre@ejemplo.com" required>
+                        <input type="email" name="email" class="form-control" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Contraseña</label>

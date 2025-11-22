@@ -1,9 +1,15 @@
 <?php
+// 1. INICIAR SESIÓN (Obligatorio al inicio de todo)
+session_start();
+
 // Definir la página por defecto
 $pagina = isset($_GET['page']) ? $_GET['page'] : 'catalogo';
 
 // Título dinámico según la página
 $titulo = ucfirst($pagina) . " - E-Shop Pro";
+
+// Conexión a la base de datos
+include 'db.php';
 
 // Incluir la cabecera común
 include 'templates/header.php';
@@ -17,7 +23,8 @@ $paginasPermitidas = [
     'perfil', 
     'historial', 
     'admin', 
-    'contacto'
+    'contacto',
+    'logout'
 ];
 
 // Lógica de enrutamiento
