@@ -27,9 +27,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt = $conn->prepare($sql);
         // Tipos: s=string, s=string, s=string, s=string, s=string, s=string
         $stmt->bind_param("ssssss", $nombre, $email, $passHash, $fecha_nac, $tarjeta, $direccion);
-
+        
         if ($stmt->execute()) {
-            $mensaje = "<div class='alert alert-success'>¡Registro exitoso! <a href='index.php?page=login'>Inicia sesión aquí</a></div>";
+            // --- AUTO-LOGIN AQUÍ ---
+            $_SESSION['id_usuario'] = $conn->insert_id; // Obtenemos el ID del nuevo usuario
+            $_SESSION['nombre_usuario'] = $nombre;
+
+            // Redirigir al catálogo inmediatamente
+            echo "<script>window.location='index.php?page=catalogo';</script>";
+            exit;
         } else {
             $mensaje = "<div class='alert alert-danger'>Error al registrar: " . $conn->error . "</div>";
         }
