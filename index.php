@@ -6,7 +6,7 @@ session_start();
 $pagina = isset($_GET['page']) ? $_GET['page'] : 'catalogo';
 
 // Título dinámico según la página
-$titulo = ucfirst($pagina) . " - E-Shop Pro";
+$titulo = ucfirst($pagina) . " - Librerias Melo";
 
 // Conexión a la base de datos
 include 'db.php';
