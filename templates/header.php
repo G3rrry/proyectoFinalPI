@@ -36,7 +36,7 @@ if (isset($_SESSION['id_usuario']) && isset($conn)) {
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="index.php?page=catalogo">
-                <i class="bi bi-shop"></i> E-Shop Pro
+                <i class="bi bi-book"></i> Librerías Melo
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
