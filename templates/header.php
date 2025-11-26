@@ -1,3 +1,22 @@
+<?php
+// Lógica para contar items del carrito en el Header
+$cart_count = 0;
+if (isset($_SESSION['id_usuario']) && isset($conn)) {
+    $uid = $_SESSION['id_usuario'];
+    // Buscamos el carrito del usuario y sumamos cantidades
+    $sql_count = "SELECT SUM(dc.cantidad) as total 
+                  FROM Carritos c 
+                  JOIN Detalle_Carrito dc ON c.id_carrito = dc.id_carrito 
+                  WHERE c.id_usuario = ?";
+    $stmt_c = $conn->prepare($sql_count);
+    $stmt_c->bind_param("i", $uid);
+    $stmt_c->execute();
+    $res_c = $stmt_c->get_result();
+    if ($row_c = $res_c->fetch_assoc()) {
+        $cart_count = $row_c['total'] ? $row_c['total'] : 0;
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -39,7 +58,6 @@
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                             <i class="bi bi-person-circle"></i> 
                             <?php 
-                                // Si hay usuario logueado, mostramos su nombre, si no "Cuenta"
                                 echo isset($_SESSION['nombre_usuario']) ? htmlspecialchars($_SESSION['nombre_usuario']) : 'Cuenta'; 
                             ?>
                         </a>
@@ -47,7 +65,6 @@
                             <?php if (isset($_SESSION['id_usuario'])): ?>
                                 <li><a class="dropdown-item" href="index.php?page=perfil">Mi Perfil</a></li>
                                 <li><a class="dropdown-item" href="index.php?page=historial">Historial de Compras</a></li>
-                                
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item text-danger" href="index.php?page=logout">Cerrar Sesión</a></li>
                             <?php else: ?>
@@ -61,7 +78,8 @@
 
                     <li class="nav-item">
                         <a class="nav-link <?php echo ($pagina == 'carrito') ? 'active' : ''; ?>" href="index.php?page=carrito">
-                            <i class="bi bi-cart4"></i> <span class="badge bg-danger rounded-pill">0</span>
+                            <i class="bi bi-cart4"></i> 
+                            <span class="badge bg-danger rounded-pill"><?php echo $cart_count; ?></span>
                         </a>
                     </li>
 
