@@ -1,8 +1,11 @@
 <h2 class="mb-4 border-bottom pb-2">Catálogo de Productos</h2>
 <div class="row">
     <?php
-    // CONSULTA REAL A LA BASE DE DATOS
-    $sql = "SELECT * FROM Productos";
+    // CONSULTA MODIFICADA: Unimos con la tabla de fotos
+    $sql = "SELECT p.*, f.foto1 
+            FROM Productos p 
+            LEFT JOIN Fotos_Producto f ON p.id_fotos = f.id_fotos";
+    
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {
@@ -18,14 +21,31 @@
             $estado = $enStock ? 'En Stock: ' . $stock : 'Agotado';
             $colorBadge = $enStock ? 'success' : 'danger';
             $btnDisabled = $enStock ? '' : 'disabled';
+
+            // Lógica de Imagen (BLOB a Base64)
+            $imagenHtml = "";
+            if (!empty($prod['foto1'])) {
+                // Convertimos el BLOB a base64 para mostrarlo
+                $imagenData = base64_encode($prod['foto1']);
+                $src = 'data:image/jpeg;base64,' . $imagenData;
+                $imagenHtml = "<img src='{$src}' class='card-img-top' style='height: 200px; object-fit: cover;' alt='{$nombre}'>";
+            } else {
+                // Icono por defecto si no hay foto
+                $imagenHtml = "<div class='bg-secondary text-white d-flex align-items-center justify-content-center' style='height: 200px;'>
+                                <i class='bi bi-box-seam display-4'></i>
+                               </div>";
+            }
     ?>
         <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
             <div class="card h-100 product-card shadow-sm">
-                <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
-                    <i class="bi bi-box-seam display-4"></i>
-                </div>
+                <?php echo $imagenHtml; ?>
+                
                 <div class="card-body d-flex flex-column">
-                    <h5 class="card-title"><?php echo $nombre; ?></h5>
+                    <h5 class="card-title">
+                        <a href="index.php?page=producto&id=<?php echo $id; ?>" class="text-decoration-none text-dark stretched-link">
+                            <?php echo $nombre; ?>
+                        </a>
+                    </h5>
                     <p class="card-text text-muted small text-truncate"><?php echo $desc; ?></p>
                     
                     <div class="mt-auto">

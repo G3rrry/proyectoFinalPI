@@ -51,7 +51,8 @@ $paginasPermitidas = [
     'perfil', 
     'historial', 
     'admin', 
-    'contacto'
+    'contacto',
+    'producto',
 ];
 
 // Lógica de enrutamiento

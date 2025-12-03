@@ -1,11 +1,13 @@
 <?php
+// views/login.php
+
 $error = "";
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    // Buscar usuario por email
-    $stmt = $conn->prepare("SELECT id_usuario, nombre_usuario, contrasena FROM `Usuarios` WHERE correo_electronico = ?");
+    // MODIFICADO: Ahora seleccionamos también el campo 'rol'
+    $stmt = $conn->prepare("SELECT id_usuario, nombre_usuario, contrasena, rol FROM `Usuarios` WHERE correo_electronico = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $resultado = $stmt->get_result();
@@ -17,7 +19,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['id_usuario'] = $user['id_usuario'];
             $_SESSION['nombre_usuario'] = $user['nombre_usuario'];
             
-            // Redirigir al catálogo o perfil
+            // NUEVO: Guardamos el rol en la sesión para usarlo después
+            $_SESSION['rol'] = $user['rol']; 
+            
+            // Redirigir al catálogo
             echo "<script>window.location='index.php?page=catalogo';</script>";
             exit;
         } else {
