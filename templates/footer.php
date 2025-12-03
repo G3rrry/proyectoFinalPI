@@ -1,3 +1,9 @@
+<?php
+// Cierre explícito de la conexión si existe
+if (isset($conn)) {
+    $conn->close();
+}
+?>
 </div> <!-- Fin del container principal -->
 
     <!-- Footer -->

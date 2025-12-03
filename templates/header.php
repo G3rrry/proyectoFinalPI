@@ -1,13 +1,11 @@
 <?php
-// Lógica para contar items del carrito en el Header
+// templates/header.php
+
+// Lógica del carrito
 $cart_count = 0;
 if (isset($_SESSION['id_usuario']) && isset($conn)) {
     $uid = $_SESSION['id_usuario'];
-    // Buscamos el carrito del usuario y sumamos cantidades
-    $sql_count = "SELECT SUM(dc.cantidad) as total 
-                  FROM Carritos c 
-                  JOIN Detalle_Carrito dc ON c.id_carrito = dc.id_carrito 
-                  WHERE c.id_usuario = ?";
+    $sql_count = "SELECT SUM(dc.cantidad) as total FROM Carritos c JOIN Detalle_Carrito dc ON c.id_carrito = dc.id_carrito WHERE c.id_usuario = ?";
     $stmt_c = $conn->prepare($sql_count);
     $stmt_c->bind_param("i", $uid);
     $stmt_c->execute();
@@ -18,20 +16,19 @@ if (isset($_SESSION['id_usuario']) && isset($conn)) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="es">
-<head>
+<html lang="es" class="h-100"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo isset($titulo) ? $titulo : 'Tienda Online'; ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
-        body { display: flex; flex-direction: column; min-height: 100vh; background-color: #f8f9fa; }
+        /* Eliminamos los estilos manuales del body para usar clases de Bootstrap */
         .product-card img { height: 200px; object-fit: cover; }
-        footer { margin-top: auto; }
     </style>
 </head>
-<body>
+
+<body class="d-flex flex-column min-vh-100 bg-light">
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
         <div class="container-fluid">
@@ -53,18 +50,19 @@ if (isset($_SESSION['id_usuario']) && isset($conn)) {
                 </ul>
                 
                 <ul class="navbar-nav">
-                    
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                             <i class="bi bi-person-circle"></i> 
-                            <?php 
-                                echo isset($_SESSION['nombre_usuario']) ? htmlspecialchars($_SESSION['nombre_usuario']) : 'Cuenta'; 
-                            ?>
+                            <?php echo isset($_SESSION['nombre_usuario']) ? htmlspecialchars($_SESSION['nombre_usuario']) : 'Cuenta'; ?>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <?php if (isset($_SESSION['id_usuario'])): ?>
                                 <li><a class="dropdown-item" href="index.php?page=perfil">Mi Perfil</a></li>
                                 <li><a class="dropdown-item" href="index.php?page=historial">Historial de Compras</a></li>
+                                <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] == 'admin'): ?>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item fw-bold" href="index.php?page=admin"><i class="bi bi-shield-lock"></i> Panel Admin</a></li> 
+                                <?php endif; ?>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item text-danger" href="index.php?page=logout">Cerrar Sesión</a></li>
                             <?php else: ?>
@@ -82,10 +80,9 @@ if (isset($_SESSION['id_usuario']) && isset($conn)) {
                             <span class="badge bg-danger rounded-pill"><?php echo $cart_count; ?></span>
                         </a>
                     </li>
-
                 </ul>
             </div>
         </div>
     </nav>
 
-    <div class="container py-4">
+    <div class="container py-4 flex-grow-1">
