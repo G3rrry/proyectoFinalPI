@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db
--- Generation Time: Nov 22, 2025 at 08:28 PM
+-- Generation Time: Dec 03, 2025 at 08:26 PM
 -- Server version: 8.1.0
 -- PHP Version: 8.2.27
 
@@ -33,6 +33,13 @@ CREATE TABLE `Carritos` (
   `fecha_creacion` datetime DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `Carritos`
+--
+
+INSERT INTO `Carritos` (`id_carrito`, `id_usuario`, `fecha_creacion`) VALUES
+(1, 1, '2025-11-26 19:17:59');
+
 -- --------------------------------------------------------
 
 --
@@ -45,6 +52,14 @@ CREATE TABLE `Compras` (
   `fecha_compra` datetime DEFAULT CURRENT_TIMESTAMP,
   `total` decimal(10,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `Compras`
+--
+
+INSERT INTO `Compras` (`id_compra`, `id_usuario`, `fecha_compra`, `total`) VALUES
+(1, 1, '2025-11-26 19:18:45', 369.09),
+(2, 1, '2025-11-26 19:20:37', 49.00);
 
 -- --------------------------------------------------------
 
@@ -72,6 +87,17 @@ CREATE TABLE `Detalle_Compras` (
   `cantidad` int DEFAULT NULL,
   `precio_unitario` decimal(10,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `Detalle_Compras`
+--
+
+INSERT INTO `Detalle_Compras` (`id_detalle`, `id_compra`, `id_producto`, `cantidad`, `precio_unitario`) VALUES
+(1, 1, 1, 12, 19.99),
+(2, 1, 2, 1, 24.50),
+(3, 1, 7, 1, 16.75),
+(4, 1, 11, 4, 21.99),
+(5, 2, 2, 2, 24.50);
 
 -- --------------------------------------------------------
 
@@ -104,6 +130,42 @@ CREATE TABLE `Productos` (
   `fabricante` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `origen` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `Productos`
+--
+
+INSERT INTO `Productos` (`id_producto`, `nombre`, `descripcion`, `id_fotos`, `precio`, `cantidad_en_almacen`, `fabricante`, `origen`) VALUES
+(1, 'Cien Años de Soledad', 'Novela emblemática de Gabriel García Márquez.', NULL, 19.99, 38, 'Editorial Sudamericana', 'Colombia'),
+(2, 'El Señor de los Anillos: La Comunidad del Anillo', 'Primera parte de la famosa trilogía de Tolkien.', NULL, 24.50, 37, 'Minotauro', 'Reino Unido'),
+(3, '1984', 'Distopía clásica escrita por George Orwell.', NULL, 14.99, 60, 'Secker & Warburg', 'Reino Unido'),
+(4, 'Orgullo y Prejuicio', 'Obra romántica de Jane Austen.', NULL, 12.99, 45, 'T. Egerton', 'Reino Unido'),
+(5, 'Crónica de una Muerte Anunciada', 'Novela corta de Gabriel García Márquez.', NULL, 11.50, 30, 'Editorial La Oveja Negra', 'Colombia'),
+(6, 'Harry Potter y la Piedra Filosofal', 'Primera entrega de la saga de Harry Potter.', NULL, 18.50, 70, 'Bloomsbury', 'Reino Unido'),
+(7, 'El Código Da Vinci', 'Thriller de misterio de Dan Brown.', NULL, 16.75, 54, 'Doubleday', 'Estados Unidos'),
+(8, 'El Alquimista', 'Novela de Paulo Coelho sobre el destino y los sueños.', NULL, 13.99, 80, 'HarperCollins', 'Brasil'),
+(9, 'Don Quijote de la Mancha', 'Clásico de la literatura española.', NULL, 22.90, 35, 'Francisco de Robles', 'España'),
+(10, 'Rayuela', 'Novela experimental de Julio Cortázar.', NULL, 17.50, 25, 'Sudamericana', 'Argentina'),
+(11, 'La Sombra del Viento', 'Primera novela de la saga El Cementerio de los Libros Olvidados.', NULL, 21.99, 46, 'Planeta', 'España'),
+(12, 'Fahrenheit 451', 'Distopía de Ray Bradbury sobre un mundo sin libros.', NULL, 12.50, 40, 'Ballantine Books', 'Estados Unidos'),
+(13, 'El Principito', 'Obra filosófica de Antoine de Saint-Exupéry.', NULL, 10.99, 90, 'Reynal & Hitchcock', 'Francia'),
+(14, 'Matar a un Ruiseñor', 'Novela sobre injusticia racial de Harper Lee.', NULL, 14.50, 45, 'J. B. Lippincott & Co.', 'Estados Unidos'),
+(15, 'Drácula', 'Clásico de terror de Bram Stoker.', NULL, 15.99, 30, 'Archibald Constable and Company', 'Irlanda'),
+(16, 'El Hobbit', 'Aventura previa a El Señor de los Anillos.', NULL, 18.75, 60, 'George Allen & Unwin', 'Reino Unido'),
+(17, 'La Metamorfosis', 'Novela de Franz Kafka.', NULL, 9.99, 80, 'Kurt Wolff Verlag', 'Austria'),
+(18, 'El Perfume', 'Historia de un asesino con un olfato extraordinario.', NULL, 16.40, 50, 'Diogenes Verlag', 'Alemania'),
+(19, 'Los Juegos del Hambre', 'Primera parte de la trilogía de Suzanne Collins.', NULL, 17.50, 70, 'Scholastic', 'Estados Unidos'),
+(20, 'It', 'Novela de terror de Stephen King.', NULL, 25.99, 40, 'Viking Press', 'Estados Unidos'),
+(21, 'La Isla del Tesoro', 'Clásico de aventuras de Robert Louis Stevenson.', NULL, 11.99, 60, 'Cassell and Company', 'Reino Unido'),
+(22, 'El Nombre del Viento', 'Primera novela de Patrick Rothfuss.', NULL, 23.50, 35, 'DAW Books', 'Estados Unidos'),
+(23, 'Dune', 'Novela épica de ciencia ficción de Frank Herbert.', NULL, 26.75, 50, 'Chilton Books', 'Estados Unidos'),
+(24, 'Neuromante', 'Obra fundacional del cyberpunk.', NULL, 19.25, 30, 'Ace Books', 'Estados Unidos'),
+(25, 'La Historia Interminable', 'Fantasía juvenil escrita por Michael Ende.', NULL, 20.99, 40, 'Thienemann Verlag', 'Alemania'),
+(26, 'El Padrino', 'Novela de mafia escrita por Mario Puzo.', NULL, 18.99, 55, 'G. P. Putnam\'s Sons', 'Estados Unidos'),
+(27, 'Los Miserables', 'Clásico de Victor Hugo sobre justicia y redención.', NULL, 24.99, 20, 'A. Lacroix, Verboeckhoven & Cie', 'Francia'),
+(28, 'Cumbres Borrascosas', 'Novela de Emily Brontë.', NULL, 14.75, 45, 'Thomas Cautley Newby', 'Reino Unido'),
+(29, 'El Retrato de Dorian Gray', 'Novela de Oscar Wilde sobre la corrupción moral.', NULL, 13.25, 70, 'Ward, Lock & Co.', 'Reino Unido'),
+(30, 'La Odisea', 'Epopeya de Homero.', NULL, 19.50, 30, 'Dominio Público', 'Grecia');
 
 -- --------------------------------------------------------
 
@@ -191,25 +253,25 @@ ALTER TABLE `Usuarios`
 -- AUTO_INCREMENT for table `Carritos`
 --
 ALTER TABLE `Carritos`
-  MODIFY `id_carrito` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id_carrito` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `Compras`
 --
 ALTER TABLE `Compras`
-  MODIFY `id_compra` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id_compra` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `Detalle_Carrito`
 --
 ALTER TABLE `Detalle_Carrito`
-  MODIFY `id_detalle_carrito` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id_detalle_carrito` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `Detalle_Compras`
 --
 ALTER TABLE `Detalle_Compras`
-  MODIFY `id_detalle` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id_detalle` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `Fotos_Producto`
@@ -221,7 +283,7 @@ ALTER TABLE `Fotos_Producto`
 -- AUTO_INCREMENT for table `Productos`
 --
 ALTER TABLE `Productos`
-  MODIFY `id_producto` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id_producto` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `Usuarios`
