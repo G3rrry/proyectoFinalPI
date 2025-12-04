@@ -3,12 +3,13 @@
 
 $error = "";
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $email = $_POST['email'];
+    // 1. Recogemos 'nombre_usuario' en lugar de email
+    $nombre = $_POST['nombre_usuario'];
     $password = $_POST['password'];
 
-    // MODIFICADO: Ahora seleccionamos también el campo 'rol'
-    $stmt = $conn->prepare("SELECT id_usuario, nombre_usuario, contrasena, rol FROM `Usuarios` WHERE correo_electronico = ?");
-    $stmt->bind_param("s", $email);
+    // 2. Modificamos el WHERE para buscar por nombre de usuario
+    $stmt = $conn->prepare("SELECT id_usuario, nombre_usuario, contrasena, rol FROM `Usuarios` WHERE nombre_usuario = ?");
+    $stmt->bind_param("s", $nombre);
     $stmt->execute();
     $resultado = $stmt->get_result();
 
@@ -19,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['id_usuario'] = $user['id_usuario'];
             $_SESSION['nombre_usuario'] = $user['nombre_usuario'];
             
-            // NUEVO: Guardamos el rol en la sesión para usarlo después
+            // Guardamos el rol
             $_SESSION['rol'] = $user['rol']; 
             
             // Redirigir al catálogo
@@ -29,7 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $error = "Contraseña incorrecta.";
         }
     } else {
-        $error = "No existe una cuenta con ese correo.";
+        // Mensaje actualizado
+        $error = "No existe una cuenta con ese nombre de usuario.";
     }
 }
 ?>
@@ -45,8 +47,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 <form action="" method="POST">
                     <div class="mb-3">
-                        <label class="form-label">Correo Electrónico</label>
-                        <input type="email" name="email" class="form-control" required>
+                        <label class="form-label">Nombre de Usuario</label>
+                        <input type="text" name="nombre_usuario" class="form-control" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Contraseña</label>

@@ -12,13 +12,10 @@ $titulo = ucfirst($pagina) . " - Librerias Melo";
 include 'db.php';
 
 // ---------------------------------------------------------
-// LÓGICA DE LOGOUT (MOVIDA AQUÍ, ANTES DEL HTML)
+// LÓGICA DE LOGOUT
 // ---------------------------------------------------------
 if ($pagina == 'logout') {
-    // 1. Destruir todas las variables de sesión
     $_SESSION = array(); 
-    
-    // 2. Destruir la cookie de sesión si existe
     if (ini_get("session.use_cookies")) {
         $params = session_get_cookie_params();
         setcookie(session_name(), '', time() - 42000,
@@ -26,23 +23,18 @@ if ($pagina == 'logout') {
             $params["secure"], $params["httponly"]
         );
     }
-    
-    // 3. Destruir la sesión
     session_destroy();
-    
-    // 4. Redirigir al login
     header("Location: index.php?page=login");
-    exit; // Importante: detiene la ejecución aquí
+    exit;
 }
+
 // ---------------------------------------------------------
+// SOLUCIÓN AL CARRITO: OUTPUT BUFFERING
+// ---------------------------------------------------------
+// Iniciamos el buffer. Esto captura todo el HTML que generen las vistas
+// pero NO lo envía al navegador todavía.
+ob_start();
 
-
-// AHORA SÍ: Incluir la cabecera común (esto genera HTML)
-include 'templates/header.php';
-
-// Lista blanca de páginas permitidas
-// Nota: Ya no es estrictamente necesario tener 'logout' aquí porque se captura arriba,
-// pero no hace daño dejarlo.
 $paginasPermitidas = [
     'catalogo', 
     'login', 
@@ -55,21 +47,34 @@ $paginasPermitidas = [
     'producto',
 ];
 
-// Lógica de enrutamiento
+// Incluimos la vista PRIMERO. Si es 'carrito.php', aquí se procesará el agregar/borrar
+// y se actualizará la base de datos.
 if (in_array($pagina, $paginasPermitidas)) {
     $archivoVista = "views/$pagina.php";
     
     if (file_exists($archivoVista)) {
         include $archivoVista;
     } else {
-        // Opción: crear una vista 404 personalizada o solo mensaje
         echo "<div class='container py-5'><h2>Error 404: Vista no encontrada</h2></div>";
     }
 } else {
-    // Si la página no existe en la lista, mostrar catálogo
     include "views/catalogo.php";
 }
 
-// Incluir el pie de página común
+// Guardamos todo el HTML que generó la vista en una variable y limpiamos el buffer
+$contenido_vista = ob_get_clean();
+
+// ---------------------------------------------------------
+// AHORA SÍ: RENDERIZADO FINAL
+// ---------------------------------------------------------
+
+// 1. Incluir Header: Como la vista ya se ejecutó arriba, la BD ya está actualizada
+// y el contador del carrito saldrá correcto.
+include 'templates/header.php';
+
+// 2. Imprimir el contenido de la vista que guardamos
+echo $contenido_vista;
+
+// 3. Incluir Footer
 include 'templates/footer.php';
 ?>

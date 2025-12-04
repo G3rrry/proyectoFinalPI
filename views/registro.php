@@ -9,35 +9,45 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $tarjeta = $_POST['numero_tarjeta_bancaria'];
     $direccion = $_POST['direccion_postal'];
 
-    // Validar que el email no exista previamente
-    $check = $conn->prepare("SELECT id_usuario FROM `Usuarios` WHERE correo_electronico = ?");
-    $check->bind_param("s", $email);
-    $check->execute();
-    $check->store_result();
+    // 1. Validar formato de correo (que tenga @ y .)
+    if (strpos($email, '@') === false || strpos($email, '.') === false) {
+        $mensaje = "<div class='alert alert-danger'>El correo debe contener un '@' y un punto '.'.</div>";
+    } 
+    // 2. Validar tarjeta (solo números, cualquier longitud)
+    elseif (!preg_match('/^[0-9]+$/', $tarjeta)) {
+        $mensaje = "<div class='alert alert-danger'>La tarjeta debe contener **únicamente números** (sin espacios ni guiones).</div>";
+    } 
+    else {
+        // 4. Validar usuario O correo repetido
+        $check = $conn->prepare("SELECT id_usuario FROM `Usuarios` WHERE correo_electronico = ? OR nombre_usuario = ?");
+        $check->bind_param("ss", $email, $nombre);
+        $check->execute();
+        $check->store_result();
 
-    if ($check->num_rows > 0) {
-        $mensaje = "<div class='alert alert-danger'>El correo ya está registrado.</div>";
-    } else {
-        // Hashear contraseña
-        $passHash = password_hash($pass, PASSWORD_BCRYPT);
-
-        // Insertar en la BD (Según tu imagen image_a29183.png)
-        $sql = "INSERT INTO `Usuarios` (nombre_usuario, correo_electronico, contrasena, fecha_nacimiento, numero_tarjeta_bancaria, direccion_postal) VALUES (?, ?, ?, ?, ?, ?)";
-        
-        $stmt = $conn->prepare($sql);
-        // Tipos: s=string, s=string, s=string, s=string, s=string, s=string
-        $stmt->bind_param("ssssss", $nombre, $email, $passHash, $fecha_nac, $tarjeta, $direccion);
-        
-        if ($stmt->execute()) {
-            // --- AUTO-LOGIN AQUÍ ---
-            $_SESSION['id_usuario'] = $conn->insert_id; // Obtenemos el ID del nuevo usuario
-            $_SESSION['nombre_usuario'] = $nombre;
-
-            // Redirigir al catálogo inmediatamente
-            echo "<script>window.location='index.php?page=catalogo';</script>";
-            exit;
+        if ($check->num_rows > 0) {
+            $mensaje = "<div class='alert alert-danger'>El nombre de usuario o el correo ya están registrados.</div>";
         } else {
-            $mensaje = "<div class='alert alert-danger'>Error al registrar: " . $conn->error . "</div>";
+            // --- HASHING ACTIVO (Seguridad mantenida) ---
+            $passHash = password_hash($pass, PASSWORD_BCRYPT);
+
+            // Insertar en la BD
+            $sql = "INSERT INTO `Usuarios` (nombre_usuario, correo_electronico, contrasena, fecha_nacimiento, numero_tarjeta_bancaria, direccion_postal) VALUES (?, ?, ?, ?, ?, ?)";
+            
+            $stmt = $conn->prepare($sql);
+            // Tipos: s=string, s=string, s=string, s=string, s=string, s=string
+            // Usamos $passHash para guardar la contraseña encriptada
+            $stmt->bind_param("ssssss", $nombre, $email, $passHash, $fecha_nac, $tarjeta, $direccion);
+            
+            if ($stmt->execute()) {
+                // --- AUTO-LOGIN ---
+                $_SESSION['id_usuario'] = $conn->insert_id; 
+                $_SESSION['nombre_usuario'] = $nombre;
+
+                echo "<script>window.location='index.php?page=catalogo';</script>";
+                exit;
+            } else {
+                $mensaje = "<div class='alert alert-danger'>Error al registrar: " . $conn->error . "</div>";
+            }
         }
     }
 }
@@ -65,8 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <div class="mb-3">
                         <label class="form-label">Contraseña</label>
                         <input type="password" name="contrasena" class="form-control" required>
-                        <div class="form-text">Se guardará de forma segura (hasheada).</div>
-                    </div>
+                        </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
@@ -75,7 +84,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Tarjeta Bancaria</label>
-                            <input type="text" name="numero_tarjeta_bancaria" class="form-control" placeholder="XXXX-XXXX-XXXX-XXXX">
+                            <input type="text" name="numero_tarjeta_bancaria" class="form-control" placeholder="Ingrese los números de su tarjeta" required>
+                            <div class="form-text text-muted">Solo números, sin espacios ni guiones.</div>
                         </div>
                     </div>
 

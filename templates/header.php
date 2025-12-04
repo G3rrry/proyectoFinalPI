@@ -68,8 +68,6 @@ if (isset($_SESSION['id_usuario']) && isset($conn)) {
                             <?php else: ?>
                                 <li><a class="dropdown-item" href="index.php?page=login">Iniciar Sesión</a></li>
                                 <li><a class="dropdown-item" href="index.php?page=registro">Registrarse</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="index.php?page=admin">Panel Admin</a></li> 
                             <?php endif; ?>
                         </ul>
                     </li>
